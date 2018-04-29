@@ -1,6 +1,12 @@
-#include <ssce/CmdParser.hpp>
+#include <ssce/cmd_parser.hpp>
+#include <dispatch/executer.hpp>
+#include <structures/dummy.hpp>
 
 #include <cstdlib>
+
+static const char* DEFAULT_INPUT = "input.txt";
+static const char* DEFAULT_OUTPUT = "output.txt";
+static const char* DEFAULT_COMMANDS = "commands.txt";
 
 #define UNUSED __attribute__((unused))
 static bool timeCommands = false;
@@ -22,9 +28,15 @@ int main(int argc, char* argv[]) {
             {SSCE_DEFAULT_NAME, 0, ssce::SSCE_TYPE_INT32, &mode, "[TYPE]\nTo select the data structure type enter a number.\n1 for arrays, 2 for AVL, 3 for hash tables."},
             {NULL, 0, ssce::SSCE_TYPE_NONE, NULL, NULL}};
   ssce::parseCmdArgs(OPTIONS, argc, argv);
-  //Load dispatcher.
-  //TODO: implementation.
+  //Create structure.
+  //TODO: add here initialization of the structures.
+  dispatch::ICommandable* current;
+  current = new structures::Dummy;
+  //Create and run dispatcher.
+  dispatch::Executer dispatcher(input?input:DEFAULT_INPUT, output?output:DEFAULT_OUTPUT, commands?commands:DEFAULT_COMMANDS, current);
+  dispatcher.run(timeCommands);
   //Clean-up.
+  delete current;
   free(input);
   free(commands);
   free(output);

@@ -1,4 +1,4 @@
-#include "Clock.hpp"
+#include "clock.hpp"
 
 #include <cfloat>
 #include <stdint.h>
