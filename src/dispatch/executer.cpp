@@ -111,7 +111,27 @@ void Executer::run(bool time){
       std::cout<<"Executing command: "<<c<<std::endl;
       t.start();
     }
-    //TODO: calls here.
+    bool result = false;
+    switch(c.id) {
+      case READ_DATA:
+        result = obj->readData(this->in);
+        break;
+      case WRITE_INDEX:
+        result = obj->dumpData(this->out);
+        break;
+      case INSERT_LINK:
+        break;
+      case DELETE_LINK:
+        break;
+      case FIND_NEIGHBORS:
+        break;
+      case FIND_NUM_CONNECTED_COMPONENTS:
+        break;
+    }
+    if(!result) {
+      std::cout<<"Could not execute command: "<<c<<std::endl;
+      exit(1);
+    }
     if(time) {
       t.stop();
       std::cout<<"Execution took "<<std::setprecision(5)<<t.delta<<" milliseconds."<<std::endl;
