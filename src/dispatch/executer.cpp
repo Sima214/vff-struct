@@ -29,7 +29,11 @@ Executer::Executer(const char* input, const char* output, const char* commands, 
   }
   obj = o;
 }
-
+Executer::~Executer() {
+  this->in.close();
+  this->out.close();
+  this->cmd.close();
+}
 enum COMMANDS {
   READ_DATA,
   WRITE_INDEX,
@@ -120,12 +124,24 @@ void Executer::run(bool time){
         result = obj->dumpData(this->out);
         break;
       case INSERT_LINK:
+        result = obj->addLink(c.data[0], c.data[1]);
         break;
       case DELETE_LINK:
+        result = obj->delLink(c.data[0], c.data[1]);
         break;
-      case FIND_NEIGHBORS:
+      case FIND_NEIGHBORS:{
+          int* array = NULL;
+          int count = obj->getNeighbors(c.data[0], true, &array);
+          result = count != -1;
+          for(int i=0; i<count; i++) {
+            this->out << array[i];
+          }
+          this->out << std::endl;
+          free(array);
+        }
         break;
       case FIND_NUM_CONNECTED_COMPONENTS:
+        //TODO: implement DFS.
         break;
     }
     if(!result) {

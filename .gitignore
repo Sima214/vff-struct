@@ -3,6 +3,7 @@ build
 .vscode
 Config.h
 Modules.h
+structs.cfg
 ##########################
 # CMake template.
 CMakeCache.txt

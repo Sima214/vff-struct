@@ -14,6 +14,7 @@ class Executer {
      * while input and output are passed appropriately.
      */
     Executer(const char* input, const char* output, const char* commands, ICommandable* o);
+    ~Executer();
     /*
      * Executes commands based on the configuration.
      * Should only be run once per Executer instance.
