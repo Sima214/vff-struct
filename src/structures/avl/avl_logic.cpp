@@ -4,6 +4,12 @@
 #include <iostream>
 
 bool AvlLogic::readData(std::ifstream& input) {
+  Avl<int> test;
+  while(!input.eof()) {
+    int a, b;
+    input >> a >> b;
+    test.insert(a);
+  }
   return true;
 }
 

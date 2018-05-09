@@ -4,10 +4,10 @@
 #include <dispatch/icommandable.hpp>
 
 template <class T> struct __AVLNode {
-  T value;
-  char meta;
   __AVLNode<T>* left;
   __AVLNode<T>* right;
+  T value;
+  char meta;
 };
 
 /*
