@@ -4,6 +4,7 @@
 #include <dispatch/icommandable.hpp>
 
 template <class T> struct __AVLNode {
+  __AVLNode<T>* parent;
   __AVLNode<T>* left;
   __AVLNode<T>* right;
   T value;
@@ -18,7 +19,7 @@ template<class T> class Avl {
     /*
      * No-op constructor.
      */
-    Avl(){
+    Avl() {
       root = NULL;
     };
     bool find(T);
@@ -27,5 +28,6 @@ template<class T> class Avl {
   private:
     __AVLNode<T>* root;
     __AVLNode<T>* __find(T key, __AVLNode<T>** parent);
+    void __balance(__AVLNode<T>* child, bool lefty);
 };
 #endif /*AVLIMP_STRUCT_HPP*/
