@@ -1,6 +1,7 @@
 #include "avl_implementation.hpp"
 
 #include <iostream>
+#include <cstdlib>
 
 template<class T> __AVLNode<T>* Avl<T>::__find(T k, __AVLNode<T>** p) {
   __AVLNode<T>* c = this->root;
@@ -20,7 +21,169 @@ template<class T> __AVLNode<T>* Avl<T>::__find(T k, __AVLNode<T>** p) {
   return c;
 }
 
-template<class T> void Avl<T>::__balance(__AVLNode<T>* start, bool lefty) {
+template<class T> void Avl<T>::__rotateLL(__AVLNode<T>* a) {
+  __AVLNode<T>* parent = a->parent;
+  __AVLNode<T>* b = a->left;
+  __AVLNode<T>* br = b->right;
+  //Update upper part of the tree.
+  if(parent != NULL) {
+    if(parent->left == a) {
+      parent->left = b;
+    }
+    else if(parent->right == a) {
+      parent->right = b;
+    }
+    else {
+      //Corrupted tree.
+      abort();
+    }
+  }
+  //Make b the new root.
+  b->parent = parent;
+  a->parent = b;
+  b->right = a;
+  //Finalize rotation.
+  if(br != NULL) {
+    br->parent = a;
+  }
+  a->left = br;
+  //Update weights.
+  a->meta = 0;
+  b->meta = 0;
+}
+
+template<class T> void Avl<T>::__rotateRR(__AVLNode<T>* a) {
+  __AVLNode<T>* parent = a->parent;
+  __AVLNode<T>* b = a->right;
+  __AVLNode<T>* bl = b->left;
+  //Update upper part of the tree.
+  if(parent != NULL) {
+    if(parent->left == a) {
+      parent->left = b;
+    }
+    else if(parent->right == a) {
+      parent->right = b;
+    }
+    else {
+      //Corrupted tree.
+      abort();
+    }
+  }
+  //Make b the new root.
+  b->parent = parent;
+  a->parent = b;
+  b->left = a;
+  //Finalize rotation.
+  if(bl != NULL) {
+    bl->parent = a;
+  }
+  a->right = bl;
+  //Update weights.
+  a->meta = 0;
+  b->meta = 0;
+}
+
+template<class T> void Avl<T>::__rotateLR(__AVLNode<T>* a) {
+  __AVLNode<T>* b = a->left;
+  __AVLNode<T>* c = b->right;
+  __AVLNode<T>* cl = c->left;
+  __AVLNode<T>* cr = c->right;
+  __AVLNode<T>* parent = a->parent;
+  //Update upper part of the tree.
+  if(parent != NULL) {
+    if(parent->left == a) {
+      parent->left = c;
+    }
+    else if(parent->right == a) {
+      parent->right = c;
+    }
+    else {
+      //Corrupted tree.
+      abort();
+    }
+  }
+  //C is the new root.
+  c->parent = parent;
+  c->left = b;
+  c->right = a;
+  b->parent = c;
+  a->parent = c;
+  //Complete rotations.
+  b->right = cl;
+  if(cl != NULL) {
+    cl->parent = b;
+  }
+  a->left = cr;
+  if(cr != NULL) {
+    cr->parent = a;
+  }
+  //Update weights.
+  if(c->meta == 0) {
+    a->meta = 0;
+    b->meta = 0;
+  }
+  else if(c->meta == 1) {
+    a->meta = 0;
+    b->meta = -1;
+  }
+  else if(c->meta == -1) {
+    a->meta = +1;
+    b->meta = 0;
+  }
+  c->meta = 0;
+}
+
+template<class T> void Avl<T>::__rotateRL(__AVLNode<T>* a) {
+  __AVLNode<T>* b = a->right;
+  __AVLNode<T>* c = b->left;
+  __AVLNode<T>* cl = c->left;
+  __AVLNode<T>* cr = c->right;
+  __AVLNode<T>* parent = a->parent;
+  //Update upper part of the tree.
+  if(parent != NULL) {
+    if(parent->left == a) {
+      parent->left = c;
+    }
+    else if(parent->right == a) {
+      parent->right = c;
+    }
+    else {
+      //Corrupted tree.
+      abort();
+    }
+  }
+  //C is the new root.
+  c->parent = parent;
+  c->left = a;
+  c->right = b;
+  b->parent = c;
+  a->parent = c;
+  //Complete rotations.
+  a->right = cl;
+  if(cl != NULL) {
+    cl->parent = a;
+  }
+  b->left = cr;
+  if(cr != NULL) {
+    cr->parent = b;
+  }
+  //Update weights.
+  if(c->meta == 0) {
+    a->meta = 0;
+    b->meta = 0;
+  }
+  else if(c->meta == 1) {
+    a->meta = -1;
+    b->meta = 0;
+  }
+  else if(c->meta == -1) {
+    a->meta = 0;
+    b->meta = +1;
+  }
+  c->meta = 0;
+}
+
+template<class T> void Avl<T>::__balance(__AVLNode<T>* start) {
   //Current code.
   __AVLNode<T>* node = start->parent;
   //The previous nodes.
@@ -36,21 +199,18 @@ template<class T> void Avl<T>::__balance(__AVLNode<T>* start, bool lefty) {
       node->meta = 0;
     }
     else {
-      if(grandChildSide == 0) {
-        std::cout << "Low depth" << std::endl;
-      }
       //Rebalancing.
       if(node_lefty && (grandChildSide==0 || grandChildSide==1)) {
-        std::cout << "LL" << std::endl;
+        this->__rotateLL(node);
       }
       else if(!node_lefty && (grandChildSide==0 || grandChildSide==2)) {
-        std::cout << "RR" << std::endl;
+        this->__rotateRR(node);
       }
       else if(node_lefty && grandChildSide==2) {
-        std::cout << "LR" << std::endl;
+        this->__rotateLR(node);
       }
       else if(!node_lefty && grandChildSide==1) {
-        std::cout << "RL" << std::endl;
+        this->__rotateRL(node);
       }
       return;
     }
@@ -91,11 +251,11 @@ template<class T> bool Avl<T>::insert(T key) {
   node->parent = end;
   if(key < end->value) {
     end->left = node;
-    this->__balance(node, true);
+    this->__balance(node);
   }
   else if(key > end->value) {
     end->right = node;
-    this->__balance(node, false);
+    this->__balance(node);
   }
   return true;
 }

@@ -28,6 +28,10 @@ template<class T> class Avl {
   private:
     __AVLNode<T>* root;
     __AVLNode<T>* __find(T key, __AVLNode<T>** parent);
-    void __balance(__AVLNode<T>* child, bool lefty);
+    void __balance(__AVLNode<T>* child);
+    void __rotateLL(__AVLNode<T>* root);
+    void __rotateRR(__AVLNode<T>* root);
+    void __rotateLR(__AVLNode<T>* root);
+    void __rotateRL(__AVLNode<T>* root);
 };
 #endif /*AVLIMP_STRUCT_HPP*/
