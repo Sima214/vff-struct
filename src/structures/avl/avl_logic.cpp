@@ -9,6 +9,10 @@ bool AvlLogic::readData(std::ifstream& input) {
     int a, b;
     input >> a >> b;
     test.insert(a);
+    bool valid = test.validate();
+    if(!valid) {
+      std::cout<<"Something is wrong after adding: "<<a<<std::endl;
+    }
   }
   return true;
 }

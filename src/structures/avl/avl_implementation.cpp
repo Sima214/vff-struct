@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <cstdlib>
+#include <algorithm>
 
 template<class T> __AVLNode<T>* Avl<T>::__find(T k, __AVLNode<T>** p) {
   __AVLNode<T>* c = this->root;
@@ -201,15 +202,19 @@ template<class T> void Avl<T>::__balance(__AVLNode<T>* start) {
     else {
       //Rebalancing.
       if(node_lefty && (grandChildSide==0 || grandChildSide==1)) {
+        std::cout<<"Performing LL rotation."<<std::endl;
         this->__rotateLL(node);
       }
       else if(!node_lefty && (grandChildSide==0 || grandChildSide==2)) {
+        std::cout<<"Performing RR rotation."<<std::endl;
         this->__rotateRR(node);
       }
       else if(node_lefty && grandChildSide==2) {
+        std::cout<<"Performing LR rotation."<<std::endl;
         this->__rotateLR(node);
       }
       else if(!node_lefty && grandChildSide==1) {
+        std::cout<<"Performing RL rotation."<<std::endl;
         this->__rotateRL(node);
       }
       return;
@@ -258,6 +263,56 @@ template<class T> bool Avl<T>::insert(T key) {
     this->__balance(node);
   }
   return true;
+}
+
+template<class T> static int calcNodeHeight(__AVLNode<T>* node) {
+  if(node == NULL) {
+    return 0;
+  }
+  else {
+    return std::max(calcNodeHeight(node->left), calcNodeHeight(node->right)) + 1;
+  }
+}
+
+template<class T> bool Avl<T>::validate() {
+  return this->__validate(this->root);
+}
+
+template<class T> bool Avl<T>::__validate(__AVLNode<T>* node) {
+  if(node == NULL){
+    return true;
+  }
+  else {
+    if(node->left && node->left->value>node->value) {
+      std::cout<<"Invalid tree: "<<node->left->value<<"must not be at the left of"<<node->value<<std::endl;
+      //Check the rest of the subtree.
+      this->__validate(node->left);
+      this->__validate(node->right);
+      return false;
+    }
+    else if((node->right && node->right->value<node->value)) {
+      std::cout<<"Invalid tree: "<<node->right->value<<"must not be at the right of"<<node->value<<std::endl;
+      //Check the rest of the subtree.
+      this->__validate(node->left);
+      this->__validate(node->right);
+      return false;
+    }
+    int lh = calcNodeHeight(node->left);
+    int rh = calcNodeHeight(node->right);
+    int balance = rh - lh;
+    if(balance>1 || balance<-1 || node->meta!=balance) {
+      std::cout<<"Expected: "<<balance<<", got: "<<(int)node->meta<<std::endl;
+      //Try to fix it.
+      node->meta = balance;
+      //Check the rest of the subtree.
+      this->__validate(node->left);
+      this->__validate(node->right);
+      return false;
+    }
+    else {
+      return this->__validate(node->left) && this->__validate(node->right);
+    }
+  }
 }
 
 template class Avl<int>;
