@@ -8,7 +8,7 @@ template <class T> struct __AVLNode {
   __AVLNode<T>* left;
   __AVLNode<T>* right;
   T value;
-  char meta;
+  int height;
 };
 
 /*
@@ -32,11 +32,9 @@ template<class T> class Avl {
   private:
     __AVLNode<T>* root;
     __AVLNode<T>* __find(T key, __AVLNode<T>** parent);
-    void __balance(__AVLNode<T>* child);
+    void __balanceInsert(__AVLNode<T>* root);
     void __rotateLL(__AVLNode<T>* root);
     void __rotateRR(__AVLNode<T>* root);
-    void __rotateLR(__AVLNode<T>* root);
-    void __rotateRL(__AVLNode<T>* root);
     bool __validate(__AVLNode<T>* node);
 };
 #endif /*AVLIMP_STRUCT_HPP*/
