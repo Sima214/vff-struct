@@ -25,16 +25,20 @@ template<class T> class Avl {
     bool find(T);
     bool insert(T);
     bool del(T);
+    #ifndef NDEBUG
     /*
      * Validate avl property.
      */
     bool validate();
+    #endif
   private:
     __AVLNode<T>* root;
     __AVLNode<T>* __find(T key, __AVLNode<T>** parent);
     void __balanceInsert(__AVLNode<T>* root);
-    void __rotateLL(__AVLNode<T>* root);
-    void __rotateRR(__AVLNode<T>* root);
+    #ifndef NDEBUG
     bool __validate(__AVLNode<T>* node);
+    #endif
+    void rotateRight(__AVLNode<T>* a);
+    void rotateLeft(__AVLNode<T>* a);
 };
 #endif /*AVLIMP_STRUCT_HPP*/
