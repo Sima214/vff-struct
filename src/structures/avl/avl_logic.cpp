@@ -4,17 +4,13 @@
 #include <iostream>
 
 bool AvlLogic::readData(std::ifstream& input) {
-  Avl<int> test;
   while(!input.eof()) {
     int a, b;
     input >> a >> b;
-    test.insert(a);
-    #ifndef NDEBUG
-    bool valid = test.validate();
-    if(!valid) {
-      std::cout<<"Something is wrong after adding: "<<a<<std::endl;
-    }
-    #endif
+    tree.insert(a);
+    //TODO: links
+    tree.insert(b);
+    //TODO: links
   }
   return true;
 }

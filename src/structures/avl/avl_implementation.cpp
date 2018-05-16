@@ -1,5 +1,7 @@
 #include "avl_implementation.hpp"
 
+#include <structures/dequeue.hpp>
+
 #include <iostream>
 #include <cstdlib>
 #include <algorithm>
@@ -99,6 +101,23 @@ template<class T> void Avl<T>::rotateLeft(__AVLNode<T>* a) {
 /*
  * Main avl implementation.
  */
+template<class T> Avl<T>::~Avl() {
+  __AVLNode<T>* node = this->root;
+  Dequeue<__AVLNode<T>*> stack;
+  while(stack.getLength()!=0 || node!= NULL) {
+    if(node != NULL) {
+      stack.pushStart(node);
+      node = node->left;
+    }
+    else {
+      node = stack.popStart();
+      __AVLNode<T>* tmp = node->right;
+      delete node;
+      node = tmp;
+    }
+  }
+}
+
 template<class T> __AVLNode<T>* Avl<T>::__find(T k, __AVLNode<T>** p) {
   __AVLNode<T>* c = this->root;
   while(c != NULL) {
@@ -192,6 +211,7 @@ template<class T> bool Avl<T>::insert(T key) {
   //Special case when the tree is empty.
   if(end == NULL) {
     this->root = node;
+    this->length++;
     return true;
   }
   //Create correct link on the parent.
@@ -202,6 +222,7 @@ template<class T> bool Avl<T>::insert(T key) {
   else if(key > end->value) {
     end->right = node;
   }
+  this->length++;
   //Fix AVL property.
   this->__balanceInsert(node);
   return true;
