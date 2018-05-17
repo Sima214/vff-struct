@@ -26,24 +26,17 @@ template<class T> class Avl {
     };
     ~Avl();
     bool find(T);
+    bool retrieve(T, T&);
     bool insert(T);
     bool del(T);
-    bool sort(T[]);
+    bool sort(T*);
     size_t getLength() {return length;}
-    #ifndef NDEBUG
-    /*
-     * Validate avl property.
-     */
-    bool validate();
-    #endif
   private:
     __AVLNode<T>* root;
     size_t length;
     __AVLNode<T>* __find(T key, __AVLNode<T>** parent);
-    void __balanceInsert(__AVLNode<T>* root);
-    #ifndef NDEBUG
-    bool __validate(__AVLNode<T>* node);
-    #endif
+    bool __delete(__AVLNode<T>* node);
+    void __balance(__AVLNode<T>* root, bool deleted);
     void rotateRight(__AVLNode<T>* a);
     void rotateLeft(__AVLNode<T>* a);
 };

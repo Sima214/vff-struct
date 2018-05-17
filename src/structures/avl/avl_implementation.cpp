@@ -1,6 +1,7 @@
 #include "avl_implementation.hpp"
 
 #include <structures/dequeue.hpp>
+#include <structures/keyvalue.hpp>
 
 #include <iostream>
 #include <cstdlib>
@@ -16,16 +17,7 @@ template<class T> static inline int height(__AVLNode<T>* node) {
 template<class T> static inline int weight(__AVLNode<T>* node) {
   return height(node->right) - height(node->left);
 }
-#ifndef NDEBUG
-template<class T> static int calcNodeHeight(__AVLNode<T>* node) {
-  if(node == NULL) {
-    return 0;
-  }
-  else {
-    return std::max(calcNodeHeight(node->left), calcNodeHeight(node->right)) + 1;
-  }
-}
-#endif
+
 template<class T> void Avl<T>::rotateRight(__AVLNode<T>* a) {
   //Let b be the left child of a.
   __AVLNode<T>* b = a->left;
@@ -102,6 +94,7 @@ template<class T> void Avl<T>::rotateLeft(__AVLNode<T>* a) {
  * Main avl implementation.
  */
 template<class T> Avl<T>::~Avl() {
+  // std::cout<<"Avl destructor called"<<std::endl;
   __AVLNode<T>* node = this->root;
   Dequeue<__AVLNode<T>*> stack;
   while(stack.getLength()!=0 || node!= NULL) {
@@ -142,55 +135,90 @@ template<class T> bool Avl<T>::find(T key) {
   return found != NULL;
 }
 
-template<class T> void Avl<T>::__balanceInsert(__AVLNode<T>* start) {
+template<class T> bool Avl<T>::retrieve(T key, T& dest){
+  __AVLNode<T>* p;
+  __AVLNode<T>* found = this->__find(key, &p);
+  if(found != NULL) {
+    dest = found->value;
+    return true;
+  }
+  else {
+    return false;
+  }
+}
+
+template<class T> void Avl<T>::__balance(__AVLNode<T>* start, bool deleted) {
   __AVLNode<T>* n = start;
-  //The history of turns taken while walking upwards.
-  //0 is left turn, 1 is right turn.
-  if(n->parent == NULL){
+  if(n == NULL) {
     return;
   }
-  int history = !!((n->parent->right)==n);
-  while((n=n->parent) != NULL) {
+  //The history of turns taken while walking upwards.
+  //0 is left turn, 1 is right turn.
+  int history = 0;
+  do {
     //Update all the heights upwards!
     n->height = std::max(height(n->right), height(n->left)) + 1;
     //If a problem is detected, then rotate.
     int w = weight(n);
     if(w == -2){
       //Node is left heavy.
-      if((history&0x3) == 0x0) {
-        //LL(single)
-        rotateRight(n);
-      }
-      else if((history&0x3) == 0x2) {
-        //LR(double)
-        rotateLeft(n->left);
-        rotateRight(n);
+      if(deleted) {
+        //Check the weight of the child.
+        __AVLNode<T>* left = n->left;
+        int w2 = weight(left);
+        if(w2 <= 0) {
+          //Left - Left heavy.
+          rotateRight(n);
+        }
+        else {
+          //Left - Right heavy.
+          rotateLeft(n->left);
+          rotateRight(n);
+        }
       }
       else {
-        //If this branch occurs I will give up.
-        abort();
+        if((history&0x3) == 0x0) {
+          //LL(single)
+          rotateRight(n);
+        }
+        else if((history&0x3) == 0x2) {
+          //LR(double)
+          rotateLeft(n->left);
+          rotateRight(n);
+        }
       }
     }
     else if(w == 2) {
       //Node is right heavy.
-      if((history&0x3) == 0x3) {
-        //RR(single)    
-        rotateLeft(n);
-      }
-      else if((history&0x3) == 0x1) {
-        //RL(double)      
-        rotateRight(n->right);
-        rotateLeft(n);
+      if(deleted) {
+        __AVLNode<T>* right = n->right;
+        int w2 = weight(right);
+        if(w2 >= 0) {
+          //Right - Right heavy.
+          rotateLeft(n);
+        }
+        else {
+          //Right - Left heavy.
+          rotateRight(n->right);
+          rotateLeft(n);
+        }
       }
       else {
-        //If this branch occurs I will give up.
-        abort();
+        if((history&0x3) == 0x3) {
+          //RR(single)    
+          rotateLeft(n);
+        }
+        else if((history&0x3) == 0x1) {
+          //RL(double)      
+          rotateRight(n->right);
+          rotateLeft(n);
+        }
       }
     }
     if(n->parent) {
       history = (history<<1) | !!((n->parent->right)==n);
     }
-  }
+  } while((n=n->parent) != NULL);
 }
 
 template<class T> bool Avl<T>::insert(T key) {
@@ -224,58 +252,86 @@ template<class T> bool Avl<T>::insert(T key) {
   }
   this->length++;
   //Fix AVL property.
-  this->__balanceInsert(node);
+  this->__balance(node, false);
   return true;
 }
 
-#ifndef NDEBUG
-/*
- * For better debugging.
- */
-template<class T> bool Avl<T>::validate() {
-  return this->__validate(this->root);
-}
-
-template<class T> bool Avl<T>::__validate(__AVLNode<T>* node) {
-  if(node == NULL){
-    return true;
-  }
-  else {
-    if(node->left && node->left->value>node->value) {
-      std::cout<<"Invalid tree: "<<node->left->value<<" must not be at the left of "<<node->value<<std::endl;
-      //Check the rest of the subtree.
-      this->__validate(node->left);
-      this->__validate(node->right);
-      return false;
-    }
-    else if((node->right && node->right->value<node->value)) {
-      std::cout<<"Invalid tree: "<<node->right->value<<" must not be at the right of "<<node->value<<std::endl;
-      //Check the rest of the subtree.
-      this->__validate(node->left);
-      this->__validate(node->right);
-      return false;
-    }
-    int lh = calcNodeHeight(node->left);
-    int rh = calcNodeHeight(node->right);
-    int balance = rh - lh;
-    if(balance>1 || balance<-1) {
-      std::cout<<"Tree is unbalanced("<<balance<<":"<<weight(node)<<")"<<std::endl;
-      //Check the rest of the subtree.
-      this->__validate(node->left);
-      this->__validate(node->right);
-      return false;
-    }
-    else if(balance != weight(node)) {
-      std::cout<<"Expected: "<<balance<<", got: "<<weight(node)<<std::endl;
-      //Check the rest of the subtree.
-      this->__validate(node->left);
-      this->__validate(node->right);
-      return false;
+template<class T> bool Avl<T>::sort(T* k) {
+  size_t i = 0;
+  __AVLNode<T>* node = this->root;
+  Dequeue<__AVLNode<T>*> stack;
+  while(stack.getLength()!=0 || node!= NULL) {
+    if(node != NULL) {
+      stack.pushStart(node);
+      node = node->left;
     }
     else {
-      return this->__validate(node->left) && this->__validate(node->right);
+      node = stack.popStart();
+      k[i++] = node->value;
+      node = node->right;
     }
   }
+  return true;
 }
-#endif
+
+template<class T> bool Avl<T>::del(T key) {
+  //Try to find the node.
+  __AVLNode<T>* end = NULL;
+  __AVLNode<T>* node = this->__find(key, &end);
+  //Cannot delete a node if it doesn't exist.
+  if(node == NULL) {
+    return false;
+  }
+  if(node->left && node->right) {
+    //Two child case.
+    __AVLNode<T>* successor = node;
+    while(successor->left) {
+      successor = successor->left;
+    }
+    node->value = successor->value;
+    return this->__delete(successor);
+  }
+  else {
+    return this->__delete(node);
+  }
+}
+
+template<class T> bool Avl<T>::__delete(__AVLNode<T>* node) {
+  if(node->left) {
+    __AVLNode<T>* left = node->left;
+    node->value = left->value;
+    node->left = NULL;
+    delete left;
+    this->__balance(node, true);
+  }
+  else if(node->right) {
+    __AVLNode<T>* right = node->right;
+    node->value = right->value;
+    node->right = NULL;
+    delete node->right;
+    this->__balance(node, true);
+  }
+  else {
+    //Root special node case.
+    if(node->parent == NULL) {
+      this->root = NULL;
+      delete node;
+      this->length--;
+      return true;
+    }
+    //Leaf node case.
+    if(node->parent->right == node) {
+      node->parent->right = NULL;
+    }
+    else {
+      node->parent->left = NULL;
+    }
+    this->__balance(node->parent, true);
+    delete node;
+  }
+  this->length--;
+  return true;
+}
+
 template class Avl<int>;
+template class Avl< KeyValue < int, Avl<int>* > >;

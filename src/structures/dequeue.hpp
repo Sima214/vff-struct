@@ -17,10 +17,10 @@ template <class T> struct __DequeueNode {
 template<typename T> class Dequeue {
   public:
     Dequeue(): start(NULL), end(NULL), length(0) {};
-    void pushEnd(T);
-    void pushStart(T);
-    T popEnd();
-    T popStart();
+    __attribute__((always_inline)) void pushEnd(T);
+    __attribute__((always_inline)) void pushStart(T);
+    __attribute__((always_inline)) T popEnd();
+    __attribute__((always_inline)) T popStart();
     size_t getLength() {
       return this->length;
     }

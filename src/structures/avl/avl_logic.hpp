@@ -3,6 +3,7 @@
 
 #include <structures/avl/avl_implementation.hpp>
 #include <dispatch/icommandable.hpp>
+#include <structures/keyvalue.hpp>
 
 /*
  * Combines two AVL structures to provide
@@ -13,12 +14,11 @@ class AvlLogic: public dispatch::ICommandable {
     AvlLogic(): tree() {};
     ~AvlLogic() {};
     bool readData(std::ifstream& input);
-    bool dumpData(std::ofstream& output);
     bool addLink(int x, int y);
     bool delLink(int x, int y);
-    int getNeighbors(int node, bool directions, int* neighbors[]);
+    int getNeighbors(int node, int* neighbors[]);
   private:
     //DO NOT PASS THIS AROUND(references are OK).
-    Avl<int> tree;
+    Avl< KeyValue < int, Avl<int>* > > tree;
 };
 #endif /*AVLLOG_STRUCT_HPP*/
