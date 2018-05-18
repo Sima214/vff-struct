@@ -3,7 +3,6 @@
 #include <structures/dequeue.hpp>
 #include <structures/keyvalue.hpp>
 
-#include <iostream>
 #include <cstdlib>
 #include <algorithm>
 
@@ -288,7 +287,6 @@ template<class T> bool Avl<T>::del(T key) {
     while(successor->left) {
       successor = successor->left;
     }
-    std::cout<<"D|L|R|S: "<<node->value<<"|"<<node->left->value<<"|"<<node->right->value<<"|"<<successor->value<<std::endl;
     node->value = successor->value;
     return this->__delete(successor);
   }
