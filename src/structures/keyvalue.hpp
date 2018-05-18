@@ -2,6 +2,7 @@
 #define KEY_VALUE_HPP
 
 #include <cstdlib>
+#include <iostream>
 
 template<typename T, typename V> class KeyValue {
   public:
@@ -29,4 +30,8 @@ template<typename T, typename V> class KeyValue {
       return this->key >= a.key;
     }
 };
+template<typename T, typename V> std::ostream& operator<<(std::ostream& o, KeyValue<T, V>& kv){
+  o<<kv.key;
+  return o;
+}
 #endif /*KEY_VALUE_HPP*/

@@ -31,7 +31,7 @@ template<class T> class Avl {
     bool del(T);
     bool sort(T*);
     size_t getLength() {return length;}
-  private:
+//  private:
     __AVLNode<T>* root;
     size_t length;
     __AVLNode<T>* __find(T key, __AVLNode<T>** parent);

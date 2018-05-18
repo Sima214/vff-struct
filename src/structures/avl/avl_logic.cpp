@@ -4,6 +4,41 @@
 #include <structures/keyvalue.hpp>
 
 #include <iostream>
+#include <algorithm>
+
+template<class T> static inline int height(__AVLNode<T>* node) {
+  return node? node->height: -1;
+}
+template<class T> static inline int weight(__AVLNode<T>* node) {
+  return height(node->right) - height(node->left);
+}
+template<typename T> static int recalcHeight(__AVLNode<T>* node) {
+  if(node == NULL) return -1;
+  return std::max(recalcHeight(node->right), recalcHeight(node->left)) + 1;
+}
+template<typename T> static bool validation(__AVLNode<T>* node) {
+  if(node == NULL) {
+    return true;
+  }
+  if(recalcHeight(node) != node->height) {
+    std::cout<<"Corrupted heights!"<<std::endl;
+    abort();
+  }
+  if(node->right && node->right->value <= node->value) {
+    std::cout<<"Right node corrupted!"<<std::endl;
+    abort();
+  }
+  if(node->left && node->left->value >= node->value) {
+    std::cout<<"Left node corrupted!"<<std::endl;
+    abort();
+  }
+  int w = weight(node);
+  if(w >= 2 || w<=-2) {
+    std::cout<<"Tree is not AVL!"<<std::endl;
+    abort();
+  }
+  return validation(node->left) && validation(node->right);
+}
 
 bool AvlLogic::readData(std::ifstream& input) {
   while(!input.eof()) {
@@ -12,6 +47,7 @@ bool AvlLogic::readData(std::ifstream& input) {
     this->addLink(a, b);
     this->addLink(b, a);
   }
+  validation(tree.root);
   return true;
 }
 
@@ -38,10 +74,12 @@ bool AvlLogic::delLink(int x, int y) {
   KeyValue< int, Avl<int>* > subtree;
   if(tree.retrieve(dummy, subtree)) {
     subtree.value->del(y);
+    validation(subtree.value->root);
     // std::cout<<"Length: "<<subtree.value->getLength()<<std::endl;
     if(subtree.value->getLength() == 0) {
       // std::cout<<"Deleting..."<<std::endl;
       tree.del(dummy);
+      validation(tree.root);
       delete subtree.value;
     }
   }

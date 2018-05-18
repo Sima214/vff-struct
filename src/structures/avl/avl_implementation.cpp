@@ -284,10 +284,11 @@ template<class T> bool Avl<T>::del(T key) {
   }
   if(node->left && node->right) {
     //Two child case.
-    __AVLNode<T>* successor = node;
+    __AVLNode<T>* successor = node->right;
     while(successor->left) {
       successor = successor->left;
     }
+    std::cout<<"D|L|R|S: "<<node->value<<"|"<<node->left->value<<"|"<<node->right->value<<"|"<<successor->value<<std::endl;
     node->value = successor->value;
     return this->__delete(successor);
   }
