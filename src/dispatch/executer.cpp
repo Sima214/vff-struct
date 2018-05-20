@@ -121,23 +121,27 @@ void Executer::run(bool time){
         result = obj->readData(this->in);
         break;
       case WRITE_INDEX:
-        result = obj->dumpData(this->out);
+        result = true;
+        std::cout<<"I thought this was removed."<<std::endl;
         break;
       case INSERT_LINK:
-        result = obj->addLink(c.data[0], c.data[1]);
+        result = obj->addLink(c.data[0], c.data[1]) && obj->addLink(c.data[1], c.data[0]);
         break;
       case DELETE_LINK:
-        result = obj->delLink(c.data[0], c.data[1]);
+        result = obj->delLink(c.data[0], c.data[1]) && obj->delLink(c.data[1], c.data[0]);
         break;
       case FIND_NEIGHBORS:{
           int* array = NULL;
-          int count = obj->getNeighbors(c.data[0], true, &array);
+          int count = obj->getNeighbors(c.data[0], &array);
           result = count != -1;
           for(int i=0; i<count; i++) {
+            if(i > 0) {
+              this->out << " ";
+            }
             this->out << array[i];
           }
           this->out << std::endl;
-          free(array);
+          delete[] array;
         }
         break;
       case FIND_NUM_CONNECTED_COMPONENTS:

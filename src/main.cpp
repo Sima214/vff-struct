@@ -1,8 +1,9 @@
 #include <ssce/cmd_parser.hpp>
 #include <dispatch/executer.hpp>
-#include <structures/dummy.hpp>
+#include <structures/avl/avl_logic.hpp>
 
 #include <cstdlib>
+#include <iostream>
 
 static const char* DEFAULT_INPUT = "input.txt";
 static const char* DEFAULT_OUTPUT = "output.txt";
@@ -29,9 +30,15 @@ int main(int argc, char* argv[]) {
             {NULL, 0, ssce::SSCE_TYPE_NONE, NULL, NULL}};
   ssce::parseCmdArgs(OPTIONS, argc, argv);
   //Create structure.
-  //TODO: add here initialization of the structures.
   dispatch::ICommandable* current;
-  current = new structures::Dummy;
+  switch(mode){
+    case 2: current = new AvlLogic;
+      break;
+    default: {
+      std::cout<<"Unsupported structure."<<std::endl;
+      return 1;
+    }
+  }
   //Create and run dispatcher.
   dispatch::Executer dispatcher(input?input:DEFAULT_INPUT, output?output:DEFAULT_OUTPUT, commands?commands:DEFAULT_COMMANDS, current);
   dispatcher.run(timeCommands);

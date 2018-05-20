@@ -21,7 +21,7 @@ class ICommandable {
      * to an output file.
      * Returns true on success.
      */
-    virtual bool dumpData(std::ofstream& output) = 0;
+    //virtual bool dumpData(std::ofstream& output) = 0;
     /*
      * Adds the specified link.
      * If the link already exists,
@@ -48,7 +48,7 @@ class ICommandable {
      * a dynamically allocated int array,
      * the point of which must be passed to 'neighbors'.
      */
-    virtual int getNeighbors(int node, bool directions, int* neighbors[]) = 0;
+    virtual int getNeighbors(int node, int* neighbors[]) = 0;
 };
 }
 #endif /*DISPATCH_ICMD_HPP*/
