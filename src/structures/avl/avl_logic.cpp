@@ -65,3 +65,7 @@ int AvlLogic::getNeighbors(int node, int* neighbors[]) {
     return 0;
   }
 }
+
+int AvlLogic::getNodes(int* nodes[]){
+  return -1;
+}
