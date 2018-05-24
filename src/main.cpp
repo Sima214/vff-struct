@@ -4,6 +4,7 @@
 
 #include <cstdlib>
 #include <iostream>
+#include <ctime>
 
 static const char* DEFAULT_INPUT = "input.txt";
 static const char* DEFAULT_OUTPUT = "output.txt";
@@ -17,6 +18,7 @@ static int timerCallback(UNUSED const char* name, UNUSED int argc, UNUSED char**
 }
 
 int main(int argc, char* argv[]) {
+  std::srand(std::time(NULL));
   int mode = 0;
   char* input = NULL;
   char* commands = NULL;

@@ -1,6 +1,7 @@
 #include "executer.hpp"
 
 #include <ssce/clock.hpp>
+#include <structures/dfs/dfs.hpp>
 
 #include <fstream>
 #include <iostream>
@@ -132,7 +133,7 @@ void Executer::run(bool time){
         break;
       case FIND_NEIGHBORS:{
           int* array = NULL;
-          int count = obj->getNeighbors(c.data[0], &array);
+          int count = obj->getNeighbors(c.data[0], array);
           result = count != -1;
           for(int i=0; i<count; i++) {
             if(i > 0) {
@@ -145,7 +146,9 @@ void Executer::run(bool time){
         }
         break;
       case FIND_NUM_CONNECTED_COMPONENTS:
-        //TODO: implement DFS.
+        int count = calculateConnectivity(obj);
+        result = count != -1;
+        this->out << count << std::endl;
         break;
     }
     if(!result) {

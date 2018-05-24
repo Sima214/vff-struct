@@ -49,19 +49,31 @@ bool AvlLogic::delLink(int x, int y) {
   return true;
 }
 
-int AvlLogic::getNeighbors(int node, int* neighbors[]) {
+int AvlLogic::getNeighbors(int node, int* &neighbors) {
   KeyValue< int, Avl<int>* > dummy(node, (Avl<int>*) NULL);
   KeyValue< int, Avl<int>* > subtree;
   if(tree.retrieve(dummy, subtree)) {
     //Node exists.
     size_t len = subtree.value->getLength();
-    int* array = new int[len];
-    *neighbors = array;
-    subtree.value->sort(array);
+    neighbors = new int[len];
+    subtree.value->sort(neighbors);
     return len;
   }
   else {
     //No node.
     return 0;
   }
+}
+
+int AvlLogic::getNodes(int* &nodes){
+  size_t len = tree.getLength();
+  KeyValue< int, Avl<int>* >* base_array = new KeyValue< int, Avl<int>* >[len];
+  nodes = new int[len];
+  tree.sort(base_array);
+  for(size_t i=0; i<len; i++) {
+    KeyValue< int, Avl<int>* >* current = base_array + i;
+    nodes[i] = current->key;
+  }
+  delete[] base_array;
+  return len;
 }

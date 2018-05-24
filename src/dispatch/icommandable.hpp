@@ -48,7 +48,14 @@ class ICommandable {
      * a dynamically allocated int array,
      * the point of which must be passed to 'neighbors'.
      */
-    virtual int getNeighbors(int node, int* neighbors[]) = 0;
+    virtual int getNeighbors(int node, int* &neighbors) = 0;
+    /*
+     * Stores all the nodes in the graph
+     * in a newly allocated array.
+     * Returns the number of nodes
+     * or -1 on error.
+     */
+    virtual int getNodes(int* &nodes) = 0;
 };
 }
 #endif /*DISPATCH_ICMD_HPP*/
