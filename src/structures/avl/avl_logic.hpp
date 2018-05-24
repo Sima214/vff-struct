@@ -16,8 +16,8 @@ class AvlLogic: public dispatch::ICommandable {
     bool readData(std::ifstream& input);
     bool addLink(int x, int y);
     bool delLink(int x, int y);
-    int getNeighbors(int node, int* neighbors[]);
-    int getNodes(int* nodes[]);
+    int getNeighbors(int node, int* &neighbors);
+    int getNodes(int* &nodes);
   private:
     //DO NOT PASS THIS AROUND(references are OK).
     Avl< KeyValue < int, Avl<int>* > > tree;

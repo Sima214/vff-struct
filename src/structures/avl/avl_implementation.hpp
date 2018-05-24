@@ -23,6 +23,7 @@ template<class T> class Avl {
      */
     Avl() {
       root = NULL;
+      length = 0;
     };
     ~Avl();
     bool find(T);
