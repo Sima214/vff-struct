@@ -1,7 +1,7 @@
 #ifndef ARRAY_UTILS_HPP
 #define ARRAY_UTILS_HPP
 
-#include <cstddef>
+#include <cstdlib>
 #include <vector>
 
 template<class T> size_t binarySearch(T* array, size_t size, T& key) {
@@ -86,6 +86,6 @@ template<class T> size_t findInsertPoint(std::vector<T> &array, T& key) {
       start = middle + 1;
     }
   }
-  return low;
+  return start;
 }
 #endif /*ARRAY_UTILS_HPP*/
