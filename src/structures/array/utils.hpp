@@ -9,8 +9,8 @@ template<class T> size_t binarySearch(T* array, size_t size, T& key) {
     //Avoid unsigned underflow.
     return -1;
   }
-  size_t start = 0;
-  size_t end = size - 1;
+  int start = 0;
+  int end = size - 1;
   while(start <= end) {
     int middle = start + (end - start)/2;
     T* cur = array + middle;
@@ -37,8 +37,8 @@ template<class T> size_t binarySearch(std::vector<T> &array, T& key) {
     //Avoid unsigned underflow.
     return -1;
   }
-  size_t start = 0;
-  size_t end = size - 1;
+  int start = 0;
+  int end = size - 1;
   while(start <= end) {
     int middle = start + (end - start)/2;
     T &cur = array.at(middle);
@@ -68,14 +68,14 @@ template<class T> size_t findInsertPoint(std::vector<T> &array, T& key) {
     //Avoid unsigned underflow.
     return 0;
   }
-  size_t start = 0;
-  size_t end = size - 1;
+  int start = 0;
+  int end = size - 1;
   while(start <= end) {
     int middle = start + (end - start)/2;
     T &cur = array.at(middle);
     if(cur == key) {
       //Hit
-      abort();//Not a set.
+      return -1;
     }
     else if(key < cur) {
       //Left

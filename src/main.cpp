@@ -1,6 +1,7 @@
 #include <ssce/cmd_parser.hpp>
 #include <dispatch/executer.hpp>
 #include <structures/avl/avl_logic.hpp>
+#include <structures/array/veclog.hpp>
 
 #include <cstdlib>
 #include <iostream>
@@ -34,6 +35,8 @@ int main(int argc, char* argv[]) {
   //Create structure.
   dispatch::ICommandable* current;
   switch(mode){
+    case 1: current = new VecLogic;
+      break;
     case 2: current = new AvlLogic;
       break;
     default: {

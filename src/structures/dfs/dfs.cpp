@@ -48,6 +48,9 @@ static void dfs(dispatch::ICommandable* graph, KeyValue<int, bool>* discovered, 
 int calculateConnectivity(dispatch::ICommandable* obj) {
   int* nodes = NULL;
   size_t count = obj->getNodes(nodes);
+  if(count == 0) {
+    return 0;
+  }
   //Generate look-up table for discovered nodes.
   KeyValue<int, bool>* discovered = new KeyValue<int, bool>[count];
   for(size_t i=0; i<count; i++) {
