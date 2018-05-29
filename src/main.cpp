@@ -2,6 +2,7 @@
 #include <dispatch/executer.hpp>
 #include <structures/avl/avl_logic.hpp>
 #include <structures/array/veclog.hpp>
+#include <structures/hash/hash_logic.hpp>
 
 #include <cstdlib>
 #include <iostream>
@@ -38,6 +39,8 @@ int main(int argc, char* argv[]) {
     case 1: current = new VecLogic;
       break;
     case 2: current = new AvlLogic;
+      break;
+    case 3: current = new HashLogic;
       break;
     default: {
       std::cout<<"Unsupported structure."<<std::endl;
