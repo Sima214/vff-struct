@@ -2,6 +2,7 @@
 
 #include <structures/dequeue.hpp>
 #include <structures/keyvalue.hpp>
+#include <structures/hash/hash_set.hpp>
 
 #include <cstdlib>
 #include <algorithm>
@@ -334,3 +335,4 @@ template<class T> bool Avl<T>::__delete(__AVLNode<T>* node) {
 
 template class Avl<int>;
 template class Avl< KeyValue < int, Avl<int>* > >;
+template class Avl< KeyValue < int, HashSet<int>* > >;
