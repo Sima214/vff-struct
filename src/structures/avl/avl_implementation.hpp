@@ -2,6 +2,7 @@
 #define AVLIMP_STRUCT_HPP
 
 #include <cstddef>
+#include <iostream>
 
 template <class T> struct __AVLNode {
   __AVLNode<T>* parent;
@@ -19,10 +20,7 @@ template<class T> class Avl {
     /*
      * No-op constructor.
      */
-    Avl() {
-      root = NULL;
-      length = 0;
-    };
+    Avl(): root(NULL), length(0) {};
     ~Avl();
     bool find(T);
     bool retrieve(T, T&);

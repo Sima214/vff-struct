@@ -14,10 +14,11 @@ template<typename T> class HashSet {
     bool find(T&);
     bool add(T&);
     bool rem(T&);
+    bool sort(T* &a);
     void stats(std::ostream&);
   private:
     Avl<T>* store;
+    size_t size;
     size_t length;
-    size_t hash(T);
 };
 #endif /*HASH_SET_HPP*/

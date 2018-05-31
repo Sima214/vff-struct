@@ -88,4 +88,27 @@ template<class T> size_t findInsertPoint(std::vector<T> &array, T& key) {
   }
   return start;
 }
+
+template<class T> size_t ssmerge(T* &dest, T* a, size_t an, T* b, size_t bn) {
+  dest = new T[an+bn];
+  size_t n = an+bn;
+  size_t i = 0;
+  size_t ai = 0;
+  size_t bi = 0;
+  while(ai<an && bi<bn) {
+    if(a[ai] < b[bi]) {
+      dest[i++] = a[ai++];
+    }
+    else {
+      dest[i++] = b[bi++];
+    }
+  }
+  while(ai < an) {
+    dest[i++] = a[ai++];
+  }
+  while(bi < bn) {
+    dest[i++] = b[bi++];
+  }
+  return n;
+}
 #endif /*ARRAY_UTILS_HPP*/
