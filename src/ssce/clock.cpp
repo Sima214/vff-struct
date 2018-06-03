@@ -61,13 +61,13 @@ namespace ssce {
     }
     LARGE_INTEGER x;
     QueryPerformanceCounter(&x);
-    this->last_query = x.QuadPart;
+    this->intcnt[0] = x.QuadPart;
   }
   void Clock::stop() {
     LARGE_INTEGER x;
     QueryPerformanceCounter(&x);
     int64_t nano_delta = x.QuadPart;
-    nano_delta = nano_delta - this->last_query;
+    nano_delta = nano_delta - this->intcnt[0];
     double delta = ((double)nano_delta) / FREQUENCY;
     this->count_query++;
     this->delta_sum += delta;

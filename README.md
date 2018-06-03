@@ -2,4 +2,6 @@
 
 [![Build Status](https://travis-ci.com/Sima214/vff-struct.svg?token=kaPtZHgAN2NhuaEpazT2&branch=master)](https://travis-ci.com/Sima214/vff-struct)
 
-[Εκφώνηση.](https://elearning.auth.gr/pluginfile.php/458651/mod_resource/content/5/assignment_2017-2018.pdf)
+## License
+
+You are not allowed to use any of the code in this repository, because it's just terrible. You can read it thought. Just remember that is a bad implementation of data structures.
